@@ -8,19 +8,6 @@
 #define LEN_BYTE	0
 #define OFF_BYTE	1
 
-void *get_func(void *addr, const char *func){
-	void *result = NULL;
-	Dl_info info;
-	if(dladdr(addr, &info)){
-		void *handle = dlopen(info.dli_fname, RTLD_NOW);
-		if(handle){
-			result = dlsym(handle, func);
-			dlclose(handle);
-		}
-	}
-	return result;
-}
-
 static uint pmask = ~(sysconf(_SC_PAGESIZE)-1);
 
 typedef struct{
