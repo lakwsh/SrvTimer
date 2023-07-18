@@ -22,10 +22,8 @@ CPP_OSX = clang
 ### SDK CONFIGURATIONS ###
 ##########################
 
-ENGINE = left4dead2
 HL2SDK = ../hl2sdk-l4d2
 HL2PUB = $(HL2SDK)/public
-INCLUDE += -I$(HL2SDK)/public/game/server
 
 
 OS := $(shell uname -s)
@@ -40,23 +38,19 @@ endif
 
 
 LIB_PREFIX = lib
-ifneq (,$(filter left4dead2,$(ENGINE)))
-	ifneq "$(OS)" "Darwin"
-		LIB_SUFFIX = _srv.$(LIB_EXT)
-	else
-		LIB_SUFFIX = .$(LIB_EXT)
-	endif
+ifneq "$(OS)" "Darwin"
+	LIB_SUFFIX = _srv.$(LIB_EXT)
 else
 	LIB_SUFFIX = .$(LIB_EXT)
 endif
 
 
-CFLAGS += -std=c++11 -DSE_LEFT4DEAD2=9 -DSOURCE_ENGINE=9 -DL4D2
+CFLAGS += -std=c++14
 
 LINK += $(HL2LIB)/tier1_i486.a $(LIB_PREFIX)vstdlib$(LIB_SUFFIX) $(LIB_PREFIX)tier0$(LIB_SUFFIX)
 
-INCLUDE += -I. -I.. -I$(HL2PUB) -I$(HL2PUB)/engine -I$(HL2PUB)/mathlib -I$(HL2PUB)/vstdlib \
-	-I$(HL2PUB)/tier0 -I$(HL2PUB)/tier1 -I.
+INCLUDE += -I. -I$(HL2PUB) -I$(HL2PUB)/engine -I$(HL2PUB)/vstdlib -I$(HL2PUB)/tier0 \
+	-I$(HL2PUB)/tier1 -I$(HL2PUB)/game/server
 
 ################################################
 ### DO NOT EDIT BELOW HERE FOR MOST PROJECTS ###
@@ -65,10 +59,10 @@ INCLUDE += -I. -I.. -I$(HL2PUB) -I$(HL2PUB)/engine -I$(HL2PUB)/mathlib -I$(HL2PU
 BINARY = $(PROJECT).$(LIB_EXT)
 
 ifeq "$(DEBUG)" "true"
-	BIN_DIR = Debug.$(ENGINE)
+	BIN_DIR = Debug
 	CFLAGS += $(DEBUG_FLAGS)
 else
-	BIN_DIR = Release.$(ENGINE)
+	BIN_DIR = Release
 	CFLAGS += $(OPT_FLAGS)
 endif
 
@@ -132,5 +126,5 @@ default: all
 
 clean:
 	rm -rf $(BIN_DIR)
-	rm *$(LIB_SUFFIX)
+	rm -f *$(LIB_SUFFIX)
 

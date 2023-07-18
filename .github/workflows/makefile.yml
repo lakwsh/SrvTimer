@@ -1,0 +1,42 @@
+name: build
+
+on:
+  push:
+    branches: [ "master" ]
+
+jobs:
+  build:
+    name: linux
+    runs-on: ubuntu-20.04
+    steps:
+    - name: Prepare env
+      run: |
+        echo "deb http://dk.archive.ubuntu.com/ubuntu/ xenial main" | sudo tee -a /etc/apt/sources.list
+        sudo apt-key adv --keyserver keyserver.ubuntu.com --recv-keys 3B4FE6ACC0B21F32
+        sudo dpkg --add-architecture i386
+        sudo apt-get update
+        sudo apt install gcc-5-multilib g++-5-multilib
+        sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-5 100
+        sudo update-alternatives --install /usr/bin/g++ g++ /usr/bin/g++-5 100
+
+    - name: Checking out hl2sdk-l4d2
+      uses: actions/checkout@v3
+      with:
+        repository: alliedmodders/hl2sdk
+        ref: l4d2
+        path: hl2sdk-l4d2
+
+    - name: Checking out SrvTimer
+      uses: actions/checkout@v3
+      with:
+        path: SrvTimer
+
+    - name: Compiling SrvTimer
+      working-directory: SrvTimer
+      run: make all
+
+    - name: Uploading SrvTimer
+      uses: actions/upload-artifact@v3
+      with:
+        name: SrvTimer-linux
+        path: SrvTimer/Release/srvtimer.so
