@@ -16,7 +16,7 @@ void srvtimer::alarm_handler(int signum){
 }
 
 FileNameHandle_t srvtimer::FindOrAddFileName(void *cls, char const *pFileName){
-	alarm(10);
+	alarm(60);
 	FileNameHandle_t ret = ((FileNameHandle_t (*)(void *, char const *))p_FindOrAddFileName)(cls, pFileName);
 	alarm(0);
 	return ret;
